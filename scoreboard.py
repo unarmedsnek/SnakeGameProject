@@ -124,19 +124,19 @@ class Scoreboard:
         surface.blit(final_surf, final_rect, high_score_rect)
 
 
-    def get_first_of_sorted(arr):
+    def get_first_of_sorted(self, arr):
         if not arr:
             return None
         n = len(arr)
-            for i in range(n):
-                swapped = False
-                for j in range (0, n - i - 1):
-                    #compares adjacent elements
-                    if arr[j] > arr[j + 1]:
-                        #swap them
+        for i in range(n):
+            swapped = False
+            for j in range(0, n - i - 1):
+                # compares adjacent elements
+                if arr[j] > arr[j + 1]:
+                # swap them
                     arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                        swapped = True
-                    if not swapped:
-                        break #array sorted no need to continue
+                    swapped = True
+            if not swapped:
+                break  # array sorted no need to continue
         first_element = arr[0]
         return first_element
