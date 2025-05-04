@@ -1,4 +1,5 @@
 #Abd Alah Fashesh
+from enum import nonmember
 
 import pygame
 import config
@@ -56,6 +57,9 @@ class Scoreboard:
         Called when the snake eats food: increments the score counter by 1.
         """
         self.score += 1
+
+    def record_final_score(self):
+        self.all_scores.append(self.score)
 
     def draw(self, surface: pygame.Surface) -> None:
         """
@@ -118,10 +122,11 @@ class Scoreboard:
         high_score_rect = high_surf.get_rect(
             center=(
                 self.game_over_position[0],
-                self.game_over_position[1] + spacing
+                self.game_over_position[1] + self.font_score.get_height() + 5
             )
         )
-        surface.blit(final_surf, final_rect, high_score_rect)
+        surface.blit(final_surf, final_rect)
+        surface.blit(high_surf, high_score_rect)
 
 
     def get_first_of_sorted(self, arr):
@@ -138,5 +143,4 @@ class Scoreboard:
                     swapped = True
             if not swapped:
                 break  # array sorted no need to continue
-        first_element = arr[0]
-        return first_element
+        return arr[-1]

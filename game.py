@@ -5,7 +5,7 @@ import config as cf
 from scoreboard import Scoreboard
 from snake import Snake
 from food import Food
-
+from tkinter import font
 
 class GameSnake:
     def __init__(self):
@@ -15,16 +15,19 @@ class GameSnake:
         self.running = True
         self.clock = pygame.time.Clock()
         self.scoreboard = Scoreboard()
-        self.food = Food()
-        self.snake = Snake([20, 15])
+        self._initialize_game_state()
         head_pos = self.snake.get_head_position()
         segments = self.snake.get_body_segments()
         self.game_over = False
 
-    def run(self):
+        # Reset button
+        button_width = 150  # Or your desired width
+        button_height = 50  # Or your desired height
+        button_x = (cf.SCREEN_WIDTH // 2) - (button_width // 2)
+        button_y = (cf.SCREEN_HEIGHT // 2) + 200  # Adjust vertical position as needed
+        self.restart_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
 
-        # Spawn the first apple
-        self.food.spawn(self.snake.get_body_segments())
+    def run(self):
 
         # While loop to keep the game running
         while self.running:
@@ -59,6 +62,12 @@ class GameSnake:
                 if event.key == pygame.K_RIGHT:
                     self.snake.change_direction((1, 0))
 
+            if event.type == pygame.MOUSEBUTTONDOWN and self.game_over and self.restart_button_rect.collidepoint(event.pos):
+                print("RESTART BUTTON CLICKED")
+                self._initialize_game_state()
+                self.game_over = False
+
+
     # Helper class for drawing the visuals
     def _draw(self):
         # Draw the background
@@ -70,8 +79,14 @@ class GameSnake:
         self.food.draw(self.screen)
         self.snake.draw(self.screen)
         self.scoreboard.draw(self.screen)
+        
         if self.game_over:
             self.scoreboard.draw_game_over(self.screen)
+            text_surf = self.scoreboard.font_game_over.render("RESTART", True, cf.SCORE_TEXT_COLOR)
+            text_rect = text_surf.get_rect()
+            text_rect.center = self.restart_button_rect.center
+            self.screen.blit(text_surf, text_rect)
+            
         pygame.display.flip()
 
     def _update(self):
@@ -83,4 +98,15 @@ class GameSnake:
             self.scoreboard.increase_score()
         if self.snake.check_collision_with_self() or self.snake.check_collision_with_wall():
             print("Game Over - Collision!")
+            self.scoreboard.record_final_score()
             self.game_over = True
+
+    def _initialize_game_state(self):
+        self.scoreboard.reset()
+        self.food = Food()
+        self.snake = Snake([20, 15])
+
+        # Spawn the first apple
+        self.food.spawn(self.snake.get_body_segments())
+
+        
