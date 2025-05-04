@@ -62,9 +62,9 @@ class GameSnake:
     # Helper class for drawing the visuals
     def _draw(self):
         # Draw the background
-        self.screen.fill(cf.BACKGROUND_COLOR)
+        # self.screen.fill(cf.BACKGROUND_COLOR)
         # pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
-        background_image = pygame.image.load('snakegame.jpg')
+        background_image = pygame.image.load(cf.BACKGROUND_IMAGE)
         background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
         self.screen.blit(background_image, (0, 0))
         self.food.draw(self.screen)

@@ -13,6 +13,7 @@ class Scoreboard:
         Initialize the scoreboard: fonts, colors, positions, and score.
         """
         self.score = 0  # Starting score
+        self.all_scores = []
 
         # Initialize Pygame font module if not already initialized
         if not pygame.font.get_init():
@@ -26,6 +27,11 @@ class Scoreboard:
         self.font_game_over = pygame.font.SysFont(
             config.FONT_NAME,
             config.FONT_SIZE_GAMEOVER
+        )
+
+        self.font_high_score = pygame.font.SysFont(
+            config.FONT_NAME,
+            config.FONT_HIGH_SCORE
         )
 
         # Colors for rendering text
@@ -92,6 +98,14 @@ class Scoreboard:
             True,
             self.score_text_color
         )
+
+        high_score_text = f"High Score: {self.get_first_of_sorted(self.all_scores)}"
+        high_surf = self.font_high_score.render(
+            high_score_text,
+            True,
+            self.score_text_color
+        )
+
         # Compute dynamic spacing based on game-over font height
         spacing = self.font_game_over.get_height() + 10
         final_rect = final_surf.get_rect(
@@ -100,4 +114,29 @@ class Scoreboard:
                 self.game_over_position[1] + spacing
             )
         )
-        surface.blit(final_surf, final_rect)
+
+        high_score_rect = high_surf.get_rect(
+            center=(
+                self.game_over_position[0],
+                self.game_over_position[1] + spacing
+            )
+        )
+        surface.blit(final_surf, final_rect, high_score_rect)
+
+
+    def get_first_of_sorted(arr):
+        if not arr:
+            return None
+        n = len(arr)
+            for i in range(n):
+                swapped = False
+                for j in range (0, n - i - 1):
+                    #compares adjacent elements
+                    if arr[j] > arr[j + 1]:
+                        #swap them
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                        swapped = True
+                    if not swapped:
+                        break #array sorted no need to continue
+        first_element = arr[0]
+        return first_element
