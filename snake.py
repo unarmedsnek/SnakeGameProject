@@ -1,6 +1,7 @@
 #Mohammad Badri
 from custom_data_structure_queue import SnakeBodyData
 from config import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, SNAKE_COLOR  # Assuming these are in config.py
+import pygame
 
 class Snake:
     """Represents the snake in the game."""

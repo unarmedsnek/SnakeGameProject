@@ -1,9 +1,10 @@
 from operator import truediv
 
 import pygame
-import pygame as game
 import config as cf
 from scoreboard import Scoreboard
+from snake import Snake
+from food import Food
 
 
 class GameSnake:
@@ -13,8 +14,61 @@ class GameSnake:
         pygame.display.set_caption('Snake Game')
         self.running = True
         self.clock = pygame.time.Clock()
+        self.scoreboard = Scoreboard()
+        self.food = Food()
+        self.snake = Snake([20, 15])
+        head_pos = self.snake.get_head_position()
+        segments = self.snake.get_body_segments()
 
     def run(self):
+
+        # Spawn the first apple
+        self.food.spawn(self.snake.get_body_segments())
+
+        # While loop to keep the game running
         while self.running:
-            pygame.event.pump()
+
+            # Call the _handle_input helper method
+            self._handle_input()
+
+            # Call the _draw helper method
+            self._draw()
+
+            # Call the _update helper class
+            self._update()
+
             self.clock.tick(cf.GAME_SPEED)
+
+    def _handle_input(self):
+        # Checks all the game events in the pygame.event.get() array
+        for event in pygame.event.get():
+            # If it finds that the user has quit the game it stops it
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.snake.change_direction((0, -1))
+                if event.key == pygame.K_DOWN:
+                    self.snake.change_direction((0, 1))
+                if event.key == pygame.K_LEFT:
+                    self.snake.change_direction((-1, 0))
+                if event.key == pygame.K_RIGHT:
+                    self.snake.change_direction((1, 0))
+
+    # Helper class for drawing the visuals
+    def _draw(self):
+        # Draw the background
+        self.screen.fill(cf.BACKGROUND_COLOR)
+        pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
+        self.food.draw(self.screen)
+        self.snake.draw(self.screen)
+        pygame.display.flip()
+
+    def _update(self):
+        #todo snake movement and everything that updates
+        self.snake.move()
+        if self.snake.get_head_position() == self.food.get_position():
+            self.snake.grow()
+            self.food.spawn(self.snake.get_body_segments())
+        elif self.snake.check_collision_with_self():
+            print("Game Over - Self Collision!")
