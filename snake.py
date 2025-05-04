@@ -1,124 +1,119 @@
 #Mohammad Badri
-from custom_data_structure_queue import SnakeBodyData
-from config import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, SNAKE_COLOR  # Assuming these are in config.py
 import pygame
 
+import config
+from custom_data_structure_queue import SnakeBodyData
+from config import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT
+
 class Snake:
-    """Represents the snake in the game."""
+    ''''
+    Represent the snake in the game
+    initial position for the snake head (x,y)
+    initial movement direction
 
-    def __init__(self, initial_position):
-        """Initializes the snake.
+    '''
+    def __init__(self,initial_position):
+        '''
 
-        Args:
-            initial_position (tuple): The starting coordinate (x, y) of the snake's head.
-        """
-        self._body = SnakeBodyData()
-        self._body.add_first(initial_position)
-        self._direction = (1, 0)  # Initial direction: right
-        self._can_change_direction = True # Flag to prevent immediate 180-degree turns
-        self._grow_next_move = False
+        '''
+        self._body = SnakeBodyData() #creats an instance of custom body manager class, stores all segments of snake
+        self._body.add_first(initial_position) #sdding the first segment for example (5,5)
+        self._direction = (1, 0)  #initial direction starts from right
+        self._can_change_direction = True #prevents the user to make 180-degree turns in the sane frame, it will be reset after each move
+        self._grow_next_move = False #if the snake eats the apple it will be set to True
+        self._alive = True  #Tracks if the snake is alive or dead
 
     def move(self):
-        """Moves the snake in its current direction.
-
-        If the snake is set to grow, the tail is not removed.
-        """
-        head_x, head_y = self._body.get_first()
+        '''
+        Moves the snake in its current direction
+        If the snake is set to grow tail is not removed
+        it adds a new head at the next cell (removes each node (part of snake body) and change to the next position in the map)
+        it reset the direction lock to allow changing direction
+        '''
+        head_x, head_y = self._body.get_first() #gets the current head position for example (5,5)
         dx, dy = self._direction
         new_head = (head_x + dx, head_y + dy)
-        self._body.add_first(new_head)
-        self._can_change_direction = True  # Reset the flag after a move
-        if not self._grow_next_move:
+        #Calculates the next head position for example
+        '''
+        if direction = (1,0) and head = (5,5) -> new head = (6,5)
+        '''
+        self._body.add_first(new_head) #adds new head to the front of the body
+        self._can_change_direction = True #after the snake moves, you allow the direction to be changed again/ prevents player to do two quick turns
+        if not self._grow_next_move:#checks if the snake didn't eat the apple then removes the tail so the length stays the same, but if eated tit will skip the removal part            self._body.remove_last()
             self._body.remove_last()
         else:
             self._grow_next_move = False
 
+
+        '''
+        example:
+        snake Body: [(5,5),(4,5),(3,5)]
+        Direction: (1,0)
+        After the move():
+        Adds new head (6,5) -> [(6,5)(5,5),(4,5),(3,5)]
+        remove last(if snake did not eat the apple) -> [(6,5)(5,5),(4,5)]
+        '''
+
     def grow(self):
-        """Sets a flag to make the snake grow on the next move."""
         self._grow_next_move = True
+        #when the snake ate the apple we will change flag to True so in the next move we don't remove the tail
 
     def change_direction(self, new_direction):
-        """Changes the snake's movement direction, preventing 180-degree turns.
-
-        Args:
-            new_direction (tuple): A tuple (dx, dy) representing the new direction
-                                   (-1, 0): left, (1, 0): right, (0, -1): up, (0, 1): down.
-        """
         if not self._can_change_direction:
-            return  # Prevent changing direction multiple times in one step
-
+            return #prevents changing direction multiple time in one step
         current_dx, current_dy = self._direction
         new_dx, new_dy = new_direction
-
-        # Prevent 180-degree turns
-        if (current_dx == -new_dx and current_dy == -new_dy):
-            return
-
+        if current_dx == -new_dx and current_dy == -new_dy: #need to be checked
+            return#prevents 180-degree
         self._direction = new_direction
-        self._can_change_direction = False
+        self._can_change_direction = False #locks direction change until the snake moves(which will be resets the flag in move())
+
 
     def check_collision_with_self(self):
-        """Checks if the snake's head has collided with its own body.
+        head = self._body.get_first() #gets the position of the snake's head
+        body = self._body.get_all_segments()[1:] #exclude the head, rest of the body
+        if head in body:#checks if heads position matches any body segments
+            self._alive = False #snake has collided with itself
+            return True
+        return False
 
-        Returns:
-            bool: True if a collision occurred, False otherwise.
-        """
-        head = self._body.get_first()
-        body = self._body.get_all_segments()[1:]  # Exclude the head
-        return head in body
+
+    def is_alive(self):
+        return self._alive
+
+
 
     def get_head_position(self):
-        """Returns the current position of the snake's head.
-
-        Returns:
-            tuple: The coordinate (x, y) of the head.
-        """
+        '''
+        returns the head position of the snake's head
+        '''
         return self._body.get_first()
 
+    def check_collision_with_wall(self):
+        '''
+        gets the head position, checks if it's outside the wall
+        less than 0 -> outside the top or left
+        greater than or equal to GRIDE_WIDTH or GRIDE_HEIGHT ->outside the right or bottom
+        '''
+        head_x, head_y = self.get_head_position()
+        if head_x < 0 or head_x >= GRID_WIDTH or head_y < 0 or head_y >= GRID_HEIGHT:
+            self._alive = False
+            return True
+        return False
+
     def get_body_segments(self):
-        """Returns a list of all the snake's body segments.
-
-        Returns:
-            list: A list of coordinate tuples (x, y) representing the snake's body.
-        """
         return self._body.get_all_segments()
+        #takes the body segment position in a tuple list(copy)
 
-    def draw(self, surface):
-        """Draws the snake on the given Pygame surface.
-
-        Args:
-            surface (pygame.Surface): The Pygame surface to draw on.
-        """
+    def draw(self,surface):
+        '''
+        Draws the snake on the surface
+        loops through all body segments of the snake
+        draws a rectangle for each segments
+        '''
         for segment in self._body.get_all_segments():
             x = segment[0] * CELL_SIZE
             y = segment[1] * CELL_SIZE
-            pygame.draw.rect(surface, SNAKE_COLOR, (x, y, CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(surface, config.SNAKE_COLOR, pygame.Rect(x, y, CELL_SIZE, CELL_SIZE))
 
-# --- Interface for Member 1 ---
-# Member 1 will primarily interact with the Snake class by:
-#
-# 1. Creating an instance of the Snake class, providing an initial position:
-#    my_snake = Snake(initial_position=(5, 5))
-#
-# 2. Getting the snake's head position:
-#    head_pos = my_snake.get_head_position()
-#
-# 3. Getting all body segments for drawing or collision checks:
-#    segments = my_snake.get_body_segments()
-#
-# 4. Moving the snake:
-#    my_snake.move()
-#
-# 5. Making the snake grow:
-#    my_snake.grow()
-#
-# 6. Changing the snake's direction:
-#    my_snake.change_direction((0, 1)) # Example: move down
-#
-# 7. Checking for self-collision:
-#    if my_snake.check_collision_with_self():
-#        print("Game Over - Self Collision!")
-#
-# 8. Drawing the snake on the game screen (Member 2 will likely handle the Pygame setup and loop):
-#    # Assuming 'game_surface' is a Pygame Surface created elsewhere
-#    # my_snake.draw(game_surface)
+

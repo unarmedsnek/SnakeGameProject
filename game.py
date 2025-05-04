@@ -1,4 +1,4 @@
-from operator import truediv
+# By Emilijus Kanapeckas
 
 import pygame
 import config as cf
@@ -19,6 +19,7 @@ class GameSnake:
         self.snake = Snake([20, 15])
         head_pos = self.snake.get_head_position()
         segments = self.snake.get_body_segments()
+        self.game_over = False
 
     def run(self):
 
@@ -35,7 +36,8 @@ class GameSnake:
             self._draw()
 
             # Call the _update helper class
-            self._update()
+            if not self.game_over:
+                self._update()
 
             self.clock.tick(cf.GAME_SPEED)
 
@@ -45,6 +47,8 @@ class GameSnake:
             # If it finds that the user has quit the game it stops it
             if event.type == pygame.QUIT:
                 self.running = False
+
+            # If the player presses an arrow key the snakes direction changes
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.snake.change_direction((0, -1))
@@ -60,8 +64,14 @@ class GameSnake:
         # Draw the background
         self.screen.fill(cf.BACKGROUND_COLOR)
         pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
+        # background_image = pygame.image.load('C:ahmad\Downloads\snakegame.jpg')
+        # background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
+        # self.screen.blit(background_image, (0, 0))
         self.food.draw(self.screen)
         self.snake.draw(self.screen)
+        self.scoreboard.draw(self.screen)
+        if self.game_over:
+            self.scoreboard.draw_game_over(self.screen)
         pygame.display.flip()
 
     def _update(self):
@@ -70,5 +80,7 @@ class GameSnake:
         if self.snake.get_head_position() == self.food.get_position():
             self.snake.grow()
             self.food.spawn(self.snake.get_body_segments())
-        elif self.snake.check_collision_with_self():
-            print("Game Over - Self Collision!")
+            self.scoreboard.increase_score()
+        if self.snake.check_collision_with_self() or self.snake.check_collision_with_wall():
+            print("Game Over - Collision!")
+            self.game_over = True

@@ -1,3 +1,5 @@
+# By Emilijus Kanapeckas
+
 import game as game
 import snake
 from game import GameSnake
