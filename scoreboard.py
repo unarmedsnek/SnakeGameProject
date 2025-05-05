@@ -1,5 +1,4 @@
-#Abd Alah Fashesh
-from enum import nonmember
+# Abd Alah Fashesh
 
 import pygame
 import config
@@ -8,139 +7,70 @@ class Scoreboard:
     """
     Manages and displays the game score and game over message.
     """
-
     def __init__(self):
-        """
-        Initialize the scoreboard: fonts, colors, positions, and score.
-        """
-        self.score = 0  # Starting score
+        # start score and history
+        self.score = 0
         self.all_scores = []
 
-        # Initialize Pygame font module if not already initialized
+        # init font system if needed
         if not pygame.font.get_init():
             pygame.font.init()
 
-        # Create fonts for score and game-over messages
-        self.font_score = pygame.font.SysFont(
-            config.FONT_NAME,
-            config.FONT_SIZE_SCORE
-        )
-        self.font_game_over = pygame.font.SysFont(
-            config.FONT_NAME,
-            config.FONT_SIZE_GAMEOVER
-        )
+        # set up fonts
+        self.font_score = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_SCORE)
+        self.font_game_over = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_GAMEOVER)
 
-        self.font_high_score = pygame.font.SysFont(
-            config.FONT_NAME,
-            config.FONT_HIGH_SCORE
-        )
+        # text colors
+        self.score_color = config.SCORE_TEXT_COLOR
+        self.game_over_color = config.GAME_OVER_TEXT_COLOR
 
-        # Colors for rendering text
-        self.score_text_color = config.SCORE_TEXT_COLOR
-        self.game_over_text_color = config.GAME_OVER_TEXT_COLOR
+        # positions
+        self.score_pos = (10, 10)
+        cx = config.SCREEN_WIDTH // 2
+        cy = config.SCREEN_HEIGHT // 2
+        self.game_over_pos = (cx, cy)
 
-        # Positions on screen
-        self.score_position = (10, 10)
-        self.game_over_position = (
-            config.SCREEN_WIDTH // 2,
-            config.SCREEN_HEIGHT // 2
-        )
-
-    def reset(self) -> None:
-        """
-        Reset the score to zero for a new game.
-        """
+    def reset(self):
+        """Reset score for a new game."""
         self.score = 0
 
-    def increase_score(self) -> None:
-        """
-        Called when the snake eats food: increments the score counter by 1.
-        """
+    def increase_score(self):
+        """Called when the snake eats: increment score."""
         self.score += 1
 
     def record_final_score(self):
+        """Store the final score in history."""
         self.all_scores.append(self.score)
 
-    def draw(self, surface: pygame.Surface) -> None:
-        """
-        Draw the current score onto the given Pygame surface each frame.
+    def get_high_score(self):
+        """Return the highest score seen so far."""
+        if self.all_scores:
+            return max(self.all_scores)
+        return 0
 
-        :param surface: The Pygame surface (screen) where text will be blitted.
-        """
-        score_text = f"Score: {self.score}"
-        text_surf = self.font_score.render(
-            score_text,                         # Text to render
-            True,                                # Enable anti-aliasing
-            self.score_text_color               # Color of the text
-        )
-        surface.blit(text_surf, self.score_position)  # Draw text at fixed position
+    def draw(self, surface):
+        """Draw the live score in the top-left corner."""
+        text = f"Score: {self.score}"
+        surf = self.font_score.render(text, True, self.score_color)
+        surface.blit(surf, self.score_pos)
 
-    def draw_game_over(
-        self,
-        surface: pygame.Surface,
-        message: str = "GAME OVER"
-    ) -> None:
-        """
-        Draw a game over message and the final score when the game ends.
+    def draw_game_over(self, surface, message="GAME OVER"):
+        """Draw game-over text, final score, and high score."""
+        # main message
+        go_s = self.font_game_over.render(message, True, self.game_over_color)
+        go_r = go_s.get_rect(center=self.game_over_pos)
+        surface.blit(go_s, go_r)
 
-        :param surface: The Pygame surface (screen) where text will be blitted.
-        :param message: The game over message to display (default "GAME OVER").
-        """
-        # Render and center the main message
-        go_surf = self.font_game_over.render(
-            message,                            # Message text
-            True,                               # Enable anti-aliasing
-            self.game_over_text_color          # Color for game-over text
-        )
-        go_rect = go_surf.get_rect(center=self.game_over_position)
-        surface.blit(go_surf, go_rect)
+        # final score below
+        final = f"Final Score: {self.score}"
+        f_s = self.font_score.render(final, True, self.score_color)
+        f_r = f_s.get_rect(center=(self.game_over_pos[0], self.game_over_pos[1] + 40))
+        surface.blit(f_s, f_r)
 
-        # Render and position the final score below the message
-        final_text = f"Final Score: {self.score}"
-        final_surf = self.font_score.render(
-            final_text,
-            True,
-            self.score_text_color
-        )
-
-        high_score_text = f"High Score: {self.get_first_of_sorted(self.all_scores)}"
-        high_surf = self.font_high_score.render(
-            high_score_text,
-            True,
-            self.score_text_color
-        )
-
-        # Compute dynamic spacing based on game-over font height
-        spacing = self.font_game_over.get_height() + 10
-        final_rect = final_surf.get_rect(
-            center=(
-                self.game_over_position[0],
-                self.game_over_position[1] + spacing
-            )
-        )
-
-        high_score_rect = high_surf.get_rect(
-            center=(
-                self.game_over_position[0],
-                self.game_over_position[1] + self.font_score.get_height() + 5
-            )
-        )
-        surface.blit(final_surf, final_rect)
-        surface.blit(high_surf, high_score_rect)
-
-
-    def get_first_of_sorted(self, arr):
-        if not arr:
-            return None
-        n = len(arr)
-        for i in range(n):
-            swapped = False
-            for j in range(0, n - i - 1):
-                # compares adjacent elements
-                if arr[j] > arr[j + 1]:
-                # swap them
-                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                    swapped = True
-            if not swapped:
-                break  # array sorted no need to continue
-        return arr[-1]
+        # high score below that
+        high = self.get_high_score()
+        if high:
+            hs = f"High Score: {high}"
+            h_s = self.font_score.render(hs, True, self.score_color)
+            h_r = h_s.get_rect(center=(self.game_over_pos[0], self.game_over_pos[1] + 80))
+            surface.blit(h_s, h_r)
