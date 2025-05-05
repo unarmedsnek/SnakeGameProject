@@ -5,7 +5,7 @@ import config as cf
 from scoreboard import Scoreboard
 from snake import Snake
 from food import Food
-from tkinter import font
+from ui import MainMeniuScreen
 
 class GameSnake:
     def __init__(self):
@@ -14,11 +14,12 @@ class GameSnake:
         pygame.display.set_caption('Snake Game')
         self.running = True
         self.clock = pygame.time.Clock()
+        self.main_meniu = MainMeniuScreen()
         self.scoreboard = Scoreboard()
         self._initialize_game_state()
+        self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
         head_pos = self.snake.get_head_position()
         segments = self.snake.get_body_segments()
-        self.game_over = False
 
         # Reset button
         button_width = 150  # Or your desired width
@@ -35,12 +36,12 @@ class GameSnake:
             # Call the _handle_input helper method
             self._handle_input()
 
+            # Call the _update helper class
+            if self.game_state == "PLAYING":
+                self._update()
+
             # Call the _draw helper method
             self._draw()
-
-            # Call the _update helper class
-            if not self.game_over:
-                self._update()
 
             self.clock.tick(cf.GAME_SPEED)
 
@@ -52,20 +53,32 @@ class GameSnake:
                 self.running = False
 
             # If the player presses an arrow key the snakes direction changes
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.snake.change_direction((0, -1))
-                if event.key == pygame.K_DOWN:
-                    self.snake.change_direction((0, 1))
-                if event.key == pygame.K_LEFT:
-                    self.snake.change_direction((-1, 0))
-                if event.key == pygame.K_RIGHT:
-                    self.snake.change_direction((1, 0))
+            if self.game_state == "PLAYING":
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.snake.change_direction((0, -1))
+                    if event.key == pygame.K_DOWN:
+                        self.snake.change_direction((0, 1))
+                    if event.key == pygame.K_LEFT:
+                        self.snake.change_direction((-1, 0))
+                    if event.key == pygame.K_RIGHT:
+                        self.snake.change_direction((1, 0))
+                    if event.key == pygame.K_ESCAPE:
+                        self.game_state = "MENU"
 
-            if event.type == pygame.MOUSEBUTTONDOWN and self.game_over and self.restart_button_rect.collidepoint(event.pos):
+            if event.type == pygame.MOUSEBUTTONDOWN and self.game_state == "GAME OVER" and self.restart_button_rect.collidepoint(event.pos):
                 print("RESTART BUTTON CLICKED")
+                self.game_state = "PLAYING"
                 self._initialize_game_state()
-                self.game_over = False
+
+            if self.game_state == "MENU":
+                action = self.main_meniu.handle_input(event)
+                if action == "START":
+                    self._initialize_game_state()
+                    self.game_state = "PLAYING"
+                elif action == "QUIT":
+                    self.running = False
+
 
 
     # Helper class for drawing the visuals
@@ -73,19 +86,23 @@ class GameSnake:
         # Draw the background
         # self.screen.fill(cf.BACKGROUND_COLOR)
         # pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
-        background_image = pygame.image.load(cf.BACKGROUND_IMAGE)
-        background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
-        self.screen.blit(background_image, (0, 0))
-        self.food.draw(self.screen)
-        self.snake.draw(self.screen)
-        self.scoreboard.draw(self.screen)
+        if self.game_state == "PLAYING":
+            background_image = pygame.image.load(cf.BACKGROUND_IMAGE)
+            background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
+            self.screen.blit(background_image, (0, 0))
+            self.food.draw(self.screen)
+            self.snake.draw(self.screen)
+            self.scoreboard.draw(self.screen)
         
-        if self.game_over:
+        if self.game_state == "GAME OVER":
             self.scoreboard.draw_game_over(self.screen)
             text_surf = self.scoreboard.font_game_over.render("RESTART", True, cf.SCORE_TEXT_COLOR)
             text_rect = text_surf.get_rect()
             text_rect.center = self.restart_button_rect.center
             self.screen.blit(text_surf, text_rect)
+
+        if self.game_state == "MENU":
+            self.main_meniu.draw(self.screen)
             
         pygame.display.flip()
 
@@ -99,7 +116,7 @@ class GameSnake:
         if self.snake.check_collision_with_self() or self.snake.check_collision_with_wall():
             print("Game Over - Collision!")
             self.scoreboard.record_final_score()
-            self.game_over = True
+            self.game_state = "GAME OVER"
 
     def _initialize_game_state(self):
         self.scoreboard.reset()
