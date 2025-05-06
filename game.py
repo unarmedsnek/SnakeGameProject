@@ -5,7 +5,7 @@ import config as cf
 from scoreboard import Scoreboard
 from snake import Snake
 from food import Food
-from ui import MainMeniuScreen
+from ui import MainMeniuScreen, ScoreboardUIScreen
 
 
 class GameSnake:
@@ -17,6 +17,7 @@ class GameSnake:
         self.clock = pygame.time.Clock()
         self.main_meniu = MainMeniuScreen()
         self.scoreboard = Scoreboard()
+        self.scoreboard_ui = ScoreboardUIScreen(self.scoreboard)
         self._initialize_game_state()
         self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
         head_pos = self.snake.get_head_position()
@@ -92,11 +93,11 @@ class GameSnake:
             self.screen.blit(background_image, (0, 0))
             self.food.draw(self.screen)
             self.snake.draw(self.screen)
-            self.scoreboard.draw(self.screen)
+            self.scoreboard_ui.draw_score(self.screen)
 
         if self.game_state == "GAME OVER":
-            self.scoreboard.draw_game_over(self.screen)
-            text_surf = self.scoreboard.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR)
+            self.scoreboard_ui.draw_game_over(self.screen)
+            text_surf = self.scoreboard_ui.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR)
             text_rect = text_surf.get_rect()
             text_rect.center = self.restart_button_rect.center
             self.screen.blit(text_surf, text_rect)

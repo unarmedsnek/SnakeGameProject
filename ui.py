@@ -72,3 +72,50 @@ class MainMeniuScreen:
                 for button in self.buttons:
                     if button.is_clicked(click_pos):
                         return button.action
+class ScoreboardUIScreen:
+    def __init__(self, scoreboard):
+        self.scoreboard = scoreboard
+
+        if not pygame.font.get_init():
+            pygame.font.init()
+
+        self.score_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_SCORE)
+        self.game_over_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_GAMEOVER)
+        self.high_score_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_HIGH_SCORE)
+
+        self.score_color = config.SCORE_TEXT_COLOR
+        self.game_over_color = config.GAME_OVER_TEXT_COLOR
+
+        self.score_pos = (10, 10)
+        self.game_over_pos = (
+            config.SCREEN_WIDTH // 2,
+            config.SCREEN_HEIGHT // 2
+        )
+
+    def draw_score(self, surface):
+        text = f"Score: {self.scoreboard.score}"
+        surf = self.score_font.render(text, True, self.score_color)
+        surface.blit(surf, self.score_pos)
+
+    def draw_game_over(self, surface, message="GAME OVER"):
+        self.scoreboard.record_final_score()
+
+        # GAME OVER title
+        surf = self.game_over_font.render(message, True, self.game_over_color)
+        rect = surf.get_rect(center=self.game_over_pos)
+        surface.blit(surf, rect)
+
+        # Final score
+        final = f"Final Score: {self.scoreboard.score}"
+        fs = self.score_font.render(final, True, self.score_color)
+        offset_final = self.game_over_font.get_height() + 10
+        fr = fs.get_rect(center=(self.game_over_pos[0], self.game_over_pos[1] + offset_final))
+        surface.blit(fs, fr)
+
+        # High score
+        high_value = self.scoreboard.get_first_of_sorted(self.scoreboard.all_scores)
+        high_text = f"High Score: {high_value}"
+        hs = self.high_score_font.render(high_text, True, self.score_color)
+        offset_high = self.game_over_font.get_height() + self.high_score_font.get_height() + 20
+        hr = hs.get_rect(center=(self.game_over_pos[0], self.game_over_pos[1] + offset_high))
+        surface.blit(hs, hr)
