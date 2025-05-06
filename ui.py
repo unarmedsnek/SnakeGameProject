@@ -1,5 +1,5 @@
 import pygame
-
+from scoreboard import Scoreboard
 import config
 
 class Button:
@@ -29,6 +29,7 @@ class Button:
 class MainMeniuScreen:
     def __init__(self):
 
+        self.scoreboard = Scoreboard()
         self.title_font = pygame.font.SysFont(config.FONT_NAME, config.TITLE_FONT_SIZE)
         self.button_font = pygame.font.SysFont(config.FONT_NAME, config.BUTTON_FONT_SIZE)
 
@@ -64,6 +65,7 @@ class MainMeniuScreen:
 
         for button in self.buttons:
             button.draw(screen)
+        self.scoreboard.draw(screen)
 
     def handle_input(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
