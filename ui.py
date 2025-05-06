@@ -24,8 +24,6 @@ class Button:
 
     def draw(self, screen):
         if self.button_bg_color is not None:
-            print(f"DEBUG: Attempting to draw rect for button '{self.text}'.")
-            print(f"DEBUG: bg_color type is {type(self.button_bg_color)}, value is {self.button_bg_color}")
             pygame.draw.rect(screen, self.button_bg_color, self.rect)
 
         screen.blit(self.text_surf, self.text_rect)

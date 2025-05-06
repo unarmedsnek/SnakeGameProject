@@ -1,8 +1,6 @@
 # By Emilijus Kanapeckas
 
 import pygame
-
-import config
 import config as cf
 from scoreboard import Scoreboard
 from snake import Snake
@@ -21,7 +19,7 @@ class GameSnake:
         self.scoreboard = Scoreboard()
         self.scoreboard_ui = ScoreboardUIScreen(self.scoreboard)
         self._initialize_game_state()
-        self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
+        self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER, SHOWING_VIDEO
 
     # Method used for running the game and applying all its helper functions every frame
     def run(self):
@@ -51,6 +49,12 @@ class GameSnake:
             if event.type == pygame.QUIT:
                 self.running = False
 
+            if self.game_state == "SHOWING_VIDEO":
+                # Only process QUIT event while video is playing externally
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    pass
+
             # If the player presses an arrow key the snakes direction changes
             if self.game_state == "PLAYING":
                 if event.type == pygame.KEYDOWN:
@@ -65,7 +69,7 @@ class GameSnake:
                     if event.key == pygame.K_ESCAPE:
                         self.game_state = "MENU"
 
-            if event.type == pygame.MOUSEBUTTONDOWN and self.game_state == "GAME OVER" and self.scoreboard_ui.restartbutton.is_clicked(
+            if event.type == pygame.MOUSEBUTTONDOWN and self.game_state == "GAME_OVER" and self.scoreboard_ui.restartbutton.is_clicked(
                     event.pos):
                 print("RESTART BUTTON CLICKED")
                 self.game_state = "PLAYING"
@@ -90,7 +94,7 @@ class GameSnake:
             self.snake.draw(self.screen)
             self.scoreboard_ui.draw_score(self.screen)
 
-        if self.game_state == "GAME OVER":
+        if self.game_state == "GAME_OVER":
             background_image = pygame.image.load(cf.GAME_OVER_SCREEN)
             background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
             self.screen.blit(background_image, (0, 0))
@@ -114,7 +118,7 @@ class GameSnake:
         if self.snake.check_collision_with_self() or self.snake.check_collision_with_wall():
             print("Game Over - Collision!")
             self.scoreboard.record_final_score()
-            self.game_state = "GAME OVER"
+            self.game_state = "GAME_OVER"
 
     # Helper method that resets the game by initializing the snake, food classes
     # and calls the score to reset and spawns the first apple
