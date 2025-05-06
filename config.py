@@ -1,6 +1,6 @@
 # Base settings
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 700
+SCREEN_HEIGHT = 500
 CELL_SIZE = 20
 
 # Derived settings (calculated here!)
@@ -10,7 +10,7 @@ GRID_HEIGHT = SCREEN_HEIGHT // CELL_SIZE
 # Colors of each element
 SNAKE_COLOR = (0, 255, 0)
 FOOD_COLOR = (255, 0, 0)
-BACKGROUND_IMAGE = ('snakegame.jpg')
+BACKGROUND_IMAGE = ('snakegame.png')
 BACKGROUND_COLOR = (0, 0, 0)
 WALL_COLOR = (255, 255, 0)
 SCORE_TEXT_COLOR = (0, 255, 0)
