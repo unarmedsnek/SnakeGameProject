@@ -96,7 +96,7 @@ class GameSnake:
         
         if self.game_state == "GAME OVER":
             self.scoreboard.draw_game_over(self.screen)
-            text_surf = self.scoreboard.font_game_over.render("RESTART", True, cf.SCORE_TEXT_COLOR)
+            text_surf = self.scoreboard.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR)
             text_rect = text_surf.get_rect()
             text_rect.center = self.restart_button_rect.center
             self.screen.blit(text_surf, text_rect)
