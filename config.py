@@ -1,3 +1,4 @@
+import pyfonts
 # Base settings
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 500
@@ -10,7 +11,9 @@ GRID_HEIGHT = SCREEN_HEIGHT // CELL_SIZE
 # Colors of each element
 SNAKE_COLOR = (0, 255, 0)
 FOOD_COLOR = (255, 0, 0)
-BACKGROUND_IMAGE = ('snakegame.png')
+BACKGROUND_IMAGE_MAINSCREEN = ('snakegame.png')
+GAME_OVER_SCREEN = ('gameover.jpg')
+BACKGROUND_IMAGE_START = ('startscreensnake.jpg')
 BACKGROUND_COLOR = (0, 0, 0)
 WALL_COLOR = (255, 255, 0)
 SCORE_TEXT_COLOR = (0, 255, 0)
@@ -23,7 +26,7 @@ TITLE_COLOR = (255, 255, 255)
 GAME_SPEED = 10
 
 # FONTS
-FONT_NAME = None
+FONT_NAME = "assets/fonts/PixelifySans-Regular.ttf"
 
 FONT_SIZE_SCORE = 24
 FONT_SIZE_GAMEOVER = 48

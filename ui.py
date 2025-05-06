@@ -1,3 +1,5 @@
+from idlelib.colorizer import color_config
+
 import pygame
 from scoreboard import Scoreboard
 import config
@@ -11,7 +13,7 @@ class Button:
         self.height = height
         self.text = text
         self.rect = pygame.Rect(x, y, width, height)
-        self.font = pygame.font.SysFont(config.FONT_NAME, font_size)
+        self.font = pygame.font.Font(config.FONT_NAME, font_size)
         self.text_color = config.BUTTON_TEXT_COLOR
         self.action = action
 
@@ -29,8 +31,8 @@ class Button:
 class MainMeniuScreen:
     def __init__(self):
 
-        self.title_font = pygame.font.SysFont(config.FONT_NAME, config.TITLE_FONT_SIZE)
-        self.button_font = pygame.font.SysFont(config.FONT_NAME, config.BUTTON_FONT_SIZE)
+        self.title_font = pygame.font.Font(config.FONT_NAME, config.TITLE_FONT_SIZE)
+        self.button_font = pygame.font.Font(config.FONT_NAME, config.BUTTON_FONT_SIZE)
 
         self.buttons = []
         self.start_button = Button(
@@ -79,9 +81,9 @@ class ScoreboardUIScreen:
         if not pygame.font.get_init():
             pygame.font.init()
 
-        self.score_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_SCORE)
-        self.game_over_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_SIZE_GAMEOVER)
-        self.high_score_font = pygame.font.SysFont(config.FONT_NAME, config.FONT_HIGH_SCORE)
+        self.score_font = pygame.font.Font(config.FONT_NAME, config.FONT_SIZE_SCORE)
+        self.game_over_font = pygame.font.Font(config.FONT_NAME, config.FONT_SIZE_GAMEOVER)
+        self.high_score_font = pygame.font.Font(config.FONT_NAME, config.FONT_HIGH_SCORE)
 
         self.score_color = config.SCORE_TEXT_COLOR
         self.game_over_color = config.GAME_OVER_TEXT_COLOR

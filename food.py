@@ -5,7 +5,6 @@ import config
 import random
 import pygame
 import snake
-import game
 
 class Food:
     def __init__(self):

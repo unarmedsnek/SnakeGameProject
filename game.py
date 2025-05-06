@@ -20,12 +20,10 @@ class GameSnake:
         self.scoreboard_ui = ScoreboardUIScreen(self.scoreboard)
         self._initialize_game_state()
         self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
-        head_pos = self.snake.get_head_position()
-        segments = self.snake.get_body_segments()
 
         # Reset button
-        button_width = 150  # Or your desired width
-        button_height = 50  # Or your desired height
+        button_width = 150
+        button_height = 50
         button_x = (cf.SCREEN_WIDTH // 2) - (button_width // 2)
         button_y = (cf.SCREEN_HEIGHT // 2) + 200  # Adjust vertical position as needed
         self.restart_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
@@ -88,7 +86,7 @@ class GameSnake:
         # self.screen.fill(cf.BACKGROUND_COLOR)
         # pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
         if self.game_state == "PLAYING":
-            background_image = pygame.image.load(cf.BACKGROUND_IMAGE)
+            background_image = pygame.image.load(cf.BACKGROUND_IMAGE_MAINSCREEN)
             background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
             self.screen.blit(background_image, (0, 0))
             self.food.draw(self.screen)
