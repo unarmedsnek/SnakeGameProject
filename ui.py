@@ -5,7 +5,7 @@ from scoreboard import Scoreboard
 import config
 
 class Button:
-    def __init__(self, x, y, width, height, font_size, action, text=''):
+    def __init__(self, x, y, width, height, font_size, action, button_bg_color=None, text=''):
         self.font_size = font_size
         self.x = x
         self.y = y
@@ -16,12 +16,18 @@ class Button:
         self.font = pygame.font.Font(config.FONT_NAME, font_size)
         self.text_color = config.BUTTON_TEXT_COLOR
         self.action = action
+        self.button_bg_color = button_bg_color
 
         self.text_surf = self.font.render(self.text, True, self.text_color)
         self.text_rect = self.text_surf.get_rect(center = self.rect.center)
 
 
     def draw(self, screen):
+        if self.button_bg_color is not None:
+            print(f"DEBUG: Attempting to draw rect for button '{self.text}'.")
+            print(f"DEBUG: bg_color type is {type(self.button_bg_color)}, value is {self.button_bg_color}")
+            pygame.draw.rect(screen, self.button_bg_color, self.rect)
+
         screen.blit(self.text_surf, self.text_rect)
 
     # Returns button is clicked
@@ -42,7 +48,7 @@ class MainMeniuScreen:
             50,
             config.BUTTON_FONT_SIZE,
             'START',
-            'Start'
+            text='Start'
         )
         self.buttons.append(self.start_button)
 
@@ -53,7 +59,7 @@ class MainMeniuScreen:
             50,
             config.BUTTON_FONT_SIZE,
             'QUIT',
-            'Quit'
+            text='Quit'
         )
         self.buttons.append(self.quit_button)
 
@@ -112,7 +118,8 @@ class ScoreboardUIScreen:
             button_height,
             config.BUTTON_FONT_SIZE,
             'RESTART',
-            'Restart'
+            button_bg_color=config.RESTART_BACKGROUND_COLOR,
+            text='Restart'
         )
 
     def draw_score(self, surface):

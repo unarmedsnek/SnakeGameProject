@@ -23,6 +23,7 @@ class GameSnake:
         self._initialize_game_state()
         self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
 
+    # Method used for running the game and applying all its helper functions every frame
     def run(self):
 
         # While loop to keep the game running
@@ -40,6 +41,9 @@ class GameSnake:
 
             self.clock.tick(cf.GAME_SPEED)
 
+    # Helper method for the run method
+    # Used for inputs and their handling
+    # Basically assigning functionality to user inputs
     def _handle_input(self):
         # Checks all the game events in the pygame.event.get() array
         for event in pygame.event.get():
@@ -75,11 +79,9 @@ class GameSnake:
                 elif action == "QUIT":
                     self.running = False
 
-    # Helper class for drawing the visuals
+    # Helper method for the run method
+    # Used for drawing the visuals
     def _draw(self):
-        # Draw the background
-        # self.screen.fill(cf.BACKGROUND_COLOR)
-        # pygame.draw.rect(self.screen, cf.WALL_COLOR, [0, 0, cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT], 2)
         if self.game_state == "PLAYING":
             background_image = pygame.image.load(cf.BACKGROUND_IMAGE_MAINSCREEN)
             background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
@@ -100,8 +102,10 @@ class GameSnake:
 
         pygame.display.flip()
 
+    # Helper method to the run method
+    # Used for any updates that need to be applied every frame
+    # All mechanicall moving parts of the code are located here
     def _update(self):
-        # todo snake movement and everything that updates
         self.snake.move()
         if self.snake.get_head_position() == self.food.get_position():
             self.snake.grow()
@@ -112,6 +116,8 @@ class GameSnake:
             self.scoreboard.record_final_score()
             self.game_state = "GAME OVER"
 
+    # Helper method that resets the game by initializing the snake, food classes
+    # and calls the score to reset and spawns the first apple
     def _initialize_game_state(self):
         self.scoreboard.reset()
         self.food = Food()
