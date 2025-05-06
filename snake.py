@@ -77,16 +77,14 @@ class Snake:
             return True
         return False
 
-
+    # Returns snake is alive
     def is_alive(self):
         return self._alive
 
 
 
     def get_head_position(self):
-        '''
-        returns the head position of the snake's head
-        '''
+        # Returns the head position of the snake's head
         return self._body.get_first()
 
     def check_collision_with_wall(self):
@@ -103,7 +101,7 @@ class Snake:
 
     def get_body_segments(self):
         return self._body.get_all_segments()
-        #takes the body segment position in a tuple list(copy)
+        # Takes the body segment position in a tuple list(copy)
 
     def draw(self,surface):
         '''

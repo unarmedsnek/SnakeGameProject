@@ -12,6 +12,7 @@ class Food:
         self.snake = snake
         self.position = None
 
+    # Doesnt allow food to be spawned on top of snake body
     def spawn(self, snake_body_segments=None):
         grid_width = self.config.GRID_WIDTH
         grid_height = self.config.GRID_HEIGHT
@@ -25,9 +26,11 @@ class Food:
                 self.position = new_position
                 break
 
+    # Gets pos of food
     def get_position(self):
         return self.position
 
+    # How the food looks and its dimensions
     def draw(self, screen):
         if self.position:
             cell_size = config.CELL_SIZE
