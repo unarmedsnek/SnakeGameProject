@@ -1,6 +1,8 @@
 # By Emilijus Kanapeckas
 
 import pygame
+
+import config
 import config as cf
 from scoreboard import Scoreboard
 from snake import Snake
@@ -94,8 +96,12 @@ class GameSnake:
             self.scoreboard_ui.draw_score(self.screen)
 
         if self.game_state == "GAME OVER":
+            background_image = pygame.image.load(cf.GAME_OVER_SCREEN)
+            background_image = pygame.transform.scale(background_image, (cf.SCREEN_WIDTH, cf.SCREEN_HEIGHT))
+            self.screen.blit(background_image, (0, 0))
+
             self.scoreboard_ui.draw_game_over(self.screen)
-            text_surf = self.scoreboard_ui.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR)
+            text_surf = self.scoreboard_ui.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR, cf.RESTART_BACKGROUND_COLOR)
             text_rect = text_surf.get_rect()
             text_rect.center = self.restart_button_rect.center
             self.screen.blit(text_surf, text_rect)

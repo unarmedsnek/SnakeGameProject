@@ -58,6 +58,11 @@ class MainMeniuScreen:
         self.buttons.append(self.quit_button)
 
     def draw(self, screen):
+
+        background_image = pygame.image.load(config.BACKGROUND_IMAGE_START)
+        background_image = pygame.transform.scale(background_image, (config.SCREEN_WIDTH, config.SCREEN_HEIGHT))
+        screen.blit(background_image, (0, 0))
+
         title_text = 'SNAKE GAME'
         self.title_surf = self.title_font.render(title_text, True, config.TITLE_COLOR)
         self.title_rect = self.title_surf.get_rect(center = (config.SCREEN_WIDTH // 2, config.SCREEN_HEIGHT // 3))
