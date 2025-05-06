@@ -23,13 +23,6 @@ class GameSnake:
         self._initialize_game_state()
         self.game_state = "MENU"  # Possible are MENIU, PLAYING, GAME_OVER
 
-        # Reset button
-        button_width = 150
-        button_height = 50
-        button_x = (cf.SCREEN_WIDTH // 2) - (button_width // 2)
-        button_y = (cf.SCREEN_HEIGHT // 2) + 200  # Adjust vertical position as needed
-        self.restart_button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-
     def run(self):
 
         # While loop to keep the game running
@@ -68,7 +61,7 @@ class GameSnake:
                     if event.key == pygame.K_ESCAPE:
                         self.game_state = "MENU"
 
-            if event.type == pygame.MOUSEBUTTONDOWN and self.game_state == "GAME OVER" and self.restart_button_rect.collidepoint(
+            if event.type == pygame.MOUSEBUTTONDOWN and self.game_state == "GAME OVER" and self.scoreboard_ui.restartbutton.is_clicked(
                     event.pos):
                 print("RESTART BUTTON CLICKED")
                 self.game_state = "PLAYING"
@@ -101,10 +94,6 @@ class GameSnake:
             self.screen.blit(background_image, (0, 0))
 
             self.scoreboard_ui.draw_game_over(self.screen)
-            text_surf = self.scoreboard_ui.game_over_font.render("RESTART", True, cf.SCORE_TEXT_COLOR, cf.RESTART_BACKGROUND_COLOR)
-            text_rect = text_surf.get_rect()
-            text_rect.center = self.restart_button_rect.center
-            self.screen.blit(text_surf, text_rect)
 
         if self.game_state == "MENU":
             self.main_meniu.draw(self.screen)

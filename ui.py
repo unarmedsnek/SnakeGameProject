@@ -79,6 +79,8 @@ class MainMeniuScreen:
                 for button in self.buttons:
                     if button.is_clicked(click_pos):
                         return button.action
+
+
 class ScoreboardUIScreen:
     def __init__(self, scoreboard):
         self.scoreboard = scoreboard
@@ -97,6 +99,20 @@ class ScoreboardUIScreen:
         self.game_over_pos = (
             config.SCREEN_WIDTH // 2,
             config.SCREEN_HEIGHT // 2
+        )
+
+        # Button settings
+        button_width = 150
+        button_height = 50
+
+        self.restartbutton = Button(
+            (config.SCREEN_WIDTH // 2) - (button_width // 2),
+            (config.SCREEN_HEIGHT // 2) + 150,
+            button_width,
+            button_height,
+            config.BUTTON_FONT_SIZE,
+            'RESTART',
+            'Restart'
         )
 
     def draw_score(self, surface):
@@ -126,3 +142,6 @@ class ScoreboardUIScreen:
         offset_high = self.game_over_font.get_height() + self.high_score_font.get_height() + 20
         hr = hs.get_rect(center=(self.game_over_pos[0], self.game_over_pos[1] + offset_high))
         surface.blit(hs, hr)
+
+        # Draw button
+        self.restartbutton.draw(surface)
