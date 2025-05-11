@@ -1,3 +1,4 @@
+# By Emilijus Kanapeckas, Abd Alah Fashesh
 from idlelib.colorizer import color_config
 
 import pygame

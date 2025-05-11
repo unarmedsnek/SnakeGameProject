@@ -1,4 +1,4 @@
-
+# By everyone
 # Base settings
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 500
@@ -12,9 +12,9 @@ GRID_HEIGHT = SCREEN_HEIGHT // CELL_SIZE
 SNAKE_COLOR = (0, 0, 0)
 FOOD_COLOR = (255, 0, 0)
 RESTART_BACKGROUND_COLOR = (255, 255, 255)
-BACKGROUND_IMAGE_MAINSCREEN = ('snakegame.png')
-GAME_OVER_SCREEN = ('gameover.jpg')
-BACKGROUND_IMAGE_START = ('startscreensnake.jpg')
+BACKGROUND_IMAGE_MAINSCREEN = ('assets/images/snakegame.png')
+GAME_OVER_SCREEN = ('assets/images/gameover.jpg')
+BACKGROUND_IMAGE_START = ('assets/images/startscreensnake.jpg')
 BACKGROUND_COLOR = (0, 0, 0)
 WALL_COLOR = (255, 255, 0)
 SCORE_TEXT_COLOR = (0, 0, 0)
